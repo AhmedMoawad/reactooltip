@@ -1,0 +1,31 @@
+{
+  "name": "reactooltip",
+  "version": "0.0.6",
+  "description": "A react tooltip component that simplify generating the tooltips inside react environment",
+  "main": "build/index.js",
+  "peerDependencies": {
+    "react": "^16.3.2"
+  },
+  "dependencies": {
+    "react": "^16.3.2",
+    "webpack": "^4.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
+  "author": {
+    "name": "Ahmed Moawad",
+    "email": "ahmedmowd@gmail.com"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "webpack-cli": "^2.1.5"
+  }
+}
