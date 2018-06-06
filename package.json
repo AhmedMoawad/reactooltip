@@ -6,6 +6,10 @@
   "peerDependencies": {
     "react": "^16.3.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AhmedMoawad/reactooltip.git"
+  },
   "dependencies": {
     "react": "^16.3.2",
     "webpack": "^4.6.0"

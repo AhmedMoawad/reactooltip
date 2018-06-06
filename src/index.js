@@ -9,11 +9,12 @@ const styles = {
         fontSize: '12px',
         lineHeight: 1.33,
         color: '#ffffff',
-        padding: '10px 10px 10px 10px',
+        padding: '6px 6px 6px 6px',
         fontWeight: 'normal',
         borderRadius: '2px',
         zIndex: 7,
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        display: 'inline-block',
     },
     arrow: {
         position: 'absolute',
@@ -57,30 +58,41 @@ class Reactooltip extends React.Component {
         this.setState({ wrapperWidth: this.wrapper.clientWidth });
     }
 
+    calculateTooltipWidth() {
+        const tooltip = document.createElement('div');
+        tooltip.textContent = this.props.content;
+        tooltip.style.display = 'inline-block';
+        document.body.appendChild(tooltip);
+        const tooltipWidth = tooltip.clientWidth;
+        document.body.removeChild(tooltip);
+        return tooltipWidth - 30;
+    }
+
     render() {
         const { content, children, width, customClass, contentAlign } = this.props;
         const { wrapperWidth, opened } = this.state;
-        const tooltipLeft = `${(wrapperWidth - width) / 2}px`;
-        const arrowLeft = `${(width - 12) / 2}px`;
+        const tooltipWidth = width || this.calculateTooltipWidth();
+        const tooltipLeft = `${(wrapperWidth - tooltipWidth) / 2}px`;
+        const arrowLeft = `${(tooltipWidth - 12) / 2}px`;
         return (
             <div
                 ref={(wrapper) => {this.wrapper = wrapper} }
                 className={`reactooltip-w ${customClass || ''}`}
                 style={styles.wrapper}
                 onMouseEnter={() => this.handleHover(true)}
-                onMouseLeave={() => this.handleHover(false)}
+                onMouseLeave={() => this.handleHover(true)}
             >
                 {opened && (
                     <div
                         className="reactooltip"
                         style={{
                             ...styles.tooltip,
-                            width: `${width}px`,
+                            width: `${tooltipWidth}px`,
                             left: tooltipLeft,
                             textAlign: contentAlign,
                         }}
                     >
-                        {content}
+                        <span>{content}</span>
                         <div
                             className="reactooltip__arrow"
                             style={{
@@ -91,7 +103,7 @@ class Reactooltip extends React.Component {
                             className="reactooltip__empty-area"
                             style={{
                                 ...styles.empty,
-                                width: `${width}px`
+                                width: `${tooltipWidth}px`
                             }}
                         />
                     </div>
@@ -107,7 +119,6 @@ class Reactooltip extends React.Component {
 
 Reactooltip.defaultProps = {
     contentAlign: 'center',
-    width: 100
 };
 
 Reactooltip.propTypes = {
