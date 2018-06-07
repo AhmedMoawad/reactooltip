@@ -35,7 +35,8 @@ const styles = {
     },
     wrapper: {
         position: 'relative',
-        display: 'inline-block'
+        display: 'inline-block',
+        cursor: 'pointer'
     },
     wrapperChild: {
         width: 'auto',
@@ -45,13 +46,15 @@ const styles = {
 class Reactooltip extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { opened: false, wrapperWidth: 0 };
-        this.handleHover = this.handleHover.bind(this);
+        this.state = { tooltipOpened: false, wrapperWidth: 0 };
+        this.handleEvent = this.handleEvent.bind(this);
         this.wrapper = null;
     }
 
-    handleHover(opened = false) {
-        this.setState({ opened });
+    handleEvent(tooltipOpened = false, event = 'hover') {
+        if (!tooltipOpened || this.props.events.includes(event)) {
+            this.setState({ tooltipOpened });
+        }
     }
 
     componentDidMount() {
@@ -59,30 +62,35 @@ class Reactooltip extends React.Component {
     }
 
     calculateTooltipWidth() {
+        if (this.props.width) {
+            return this.props.width;
+        }
         const tooltip = document.createElement('div');
         tooltip.textContent = this.props.content;
         tooltip.style.display = 'inline-block';
         document.body.appendChild(tooltip);
         const tooltipWidth = tooltip.clientWidth;
         document.body.removeChild(tooltip);
-        return tooltipWidth - 30;
+        return tooltipWidth;
     }
 
     render() {
-        const { content, children, width, customClass, contentAlign } = this.props;
-        const { wrapperWidth, opened } = this.state;
-        const tooltipWidth = width || this.calculateTooltipWidth();
+        const { content, children, customClass, contentAlign, opened } = this.props;
+        const { wrapperWidth, tooltipOpened } = this.state;
+        const tooltipWidth = this.calculateTooltipWidth();
         const tooltipLeft = `${(wrapperWidth - tooltipWidth) / 2}px`;
         const arrowLeft = `${(tooltipWidth - 12) / 2}px`;
+        const shouldActivate = tooltipOpened || opened;
         return (
             <div
                 ref={(wrapper) => {this.wrapper = wrapper} }
                 className={`reactooltip-w ${customClass || ''}`}
                 style={styles.wrapper}
-                onMouseEnter={() => this.handleHover(true)}
-                onMouseLeave={() => this.handleHover(true)}
+                onMouseEnter={() => this.handleEvent(true)}
+                onMouseLeave={() => this.handleEvent()}
+                onClick={() => this.handleEvent(true, 'click')}
             >
-                {opened && (
+                {shouldActivate && (
                     <div
                         className="reactooltip"
                         style={{
@@ -119,6 +127,8 @@ class Reactooltip extends React.Component {
 
 Reactooltip.defaultProps = {
     contentAlign: 'center',
+    events: ['hover'],
+    opened: false,
 };
 
 Reactooltip.propTypes = {
@@ -130,6 +140,8 @@ Reactooltip.propTypes = {
     width: PropTypes.number,
     contentAlign: PropTypes.oneOf(['right', 'left', 'center']),
     customClass: PropTypes.string.isRequired,
+    events: PropTypes.arrayOf(PropTypes.oneOf(['hover', 'click'])),
+    opened: PropTypes.bool,
 };
 
 export default Reactooltip;
