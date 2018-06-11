@@ -35,8 +35,7 @@ const styles = {
     },
     wrapper: {
         position: 'relative',
-        display: 'inline-block',
-        cursor: 'pointer'
+        display: 'inline-block'
     },
     wrapperChild: {
         width: 'auto',
